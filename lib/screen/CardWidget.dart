@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:to_do/model/TaskModel.dart';
+import 'package:to_do/provider/TitleProvider.dart';
+import 'package:to_do/provider/auth_provider.dart';
 import 'package:to_do/provider/cloudprovider.dart';
+import 'package:to_do/screen/EditScreen.dart';
 
 class CardWidget extends ConsumerWidget {
   final ToDoModel note;
@@ -16,6 +19,7 @@ class CardWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cloud = ref.watch(cloudServiceProvider);
+    final auth = ref.watch(authServiceProvider);
     Color categoryColor = Colors.white;
     final getCategory = note.Category;
     switch (getCategory) {
@@ -33,7 +37,7 @@ class CardWidget extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       width: double.infinity,
-      height: 120,
+      height: 180,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -94,10 +98,58 @@ class CardWidget extends ConsumerWidget {
                           color: Colors.grey.shade200,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(note.DateTask),
                             const Gap(12),
                             Text(note.TimeTask),
+                            const Gap(12),
+                            ElevatedButton(
+                              onPressed: () => showModalBottomSheet(
+                                isScrollControlled: true,
+                                useRootNavigator: auth.user != null,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                context: context,
+                                builder: (context) => EditModel(
+                                  title_controller:
+                                      ref.read(titleControllerProvider),
+                                  description_controller:
+                                      ref.read(descControllerProvider),
+                                  uuid: note.docID,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: categoryColor,
+                                foregroundColor: Colors.black,
+                                elevation: 1,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: SizedBox(
+                                width: 60,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      SizedBox(
+                                          height: 15,
+                                          child:
+                                              Image.asset("assets/edit.png")),
+                                      const Gap(12),
+                                      const SizedBox(
+                                        width: 30,
+                                        child: Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                            ),
                           ],
                         ),
                       ],

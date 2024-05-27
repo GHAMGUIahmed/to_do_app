@@ -93,14 +93,14 @@ class SignUp extends ConsumerWidget {
               ),
               onPressed: () async {
                 try {
-                  Navigator.pop(context);
-
                   if (password_controller.text ==
                       password_controller_conf.text) {
                     await auth.createUserWithEmailAndPassword(
                         email_controller.text,
                         password_controller.text,
                         UserName.text);
+
+                    Navigator.pop(context);
                   } else {
                     showDialog(
                         context: context,

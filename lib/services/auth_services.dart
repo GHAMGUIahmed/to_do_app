@@ -4,10 +4,12 @@ import 'package:to_do/services/cloud_services.dart';
 
 class AuthService {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  bool connected = false;
   UserModel? uu(User? user) {
     if (user == null) {
       return null;
     }
+
     return UserModel(user.uid, user.email, user.displayName);
   }
 
@@ -27,7 +29,10 @@ class AuthService {
   }
 
   Future<User?> createUserWithEmailAndPassword(
-      String email, String password, String displayName) async {
+    String email,
+    String password,
+    String displayName,
+  ) async {
     final credential = await auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
@@ -38,6 +43,7 @@ class AuthService {
           .updateDisplayName(displayName)
           .then((value) => CloudService().CreateUser(email));
       await credential.user!.reload();
+
       return auth.currentUser;
     } else {
       throw FirebaseAuthException(
@@ -47,7 +53,8 @@ class AuthService {
     }
   }
 
-  Future<void> singOut() async {
-    return await auth.signOut();
+  Future<bool> singOut() async {
+    await auth.signOut();
+    return true;
   }
 }

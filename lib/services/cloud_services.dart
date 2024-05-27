@@ -2,21 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do/model/TaskModel.dart';
-import 'package:to_do/services/auth_services.dart';
 import 'package:uuid/uuid.dart';
 
 class CloudService {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  final String? userid =
-      AuthService().uu(FirebaseAuth.instance.currentUser)!.uid;
-  final String? userName =
-      AuthService().uu(FirebaseAuth.instance.currentUser)!.name;
+
+  String? get userid {
+    final user = FirebaseAuth.instance.currentUser;
+    return user?.uid;
+  }
+
+  String? get userName {
+    print(FirebaseAuth.instance.currentUser!.displayName);
+    return FirebaseAuth.instance.currentUser!.displayName;
+  }
+
   Future<bool> CreateUser(String email) async {
     try {
       fireStore
           .collection("users")
           .doc(userid)
-          .set({"id": userid, "email": email});
+          .set({"id": userid, "email": email, "name": userName});
       return true;
     } catch (e) {
       return true;
@@ -76,7 +82,7 @@ class CloudService {
   }
 
   Stream<QuerySnapshot> stream() {
-    // print(userid);
+    print("hello $userid");
     return fireStore
         .collection('users')
         .doc(userid)
@@ -86,6 +92,7 @@ class CloudService {
 
   Future<bool> update(bool isDon, String uid) async {
     try {
+      print(userid);
       await fireStore
           .collection("users")
           .doc(userid)
@@ -112,6 +119,34 @@ class CloudService {
       print(e);
 
       return false;
+    }
+  }
+
+  Future<bool> EditTask(
+    String Title,
+    String Description,
+    String Date,
+    String Time,
+    String Category,
+    String uuid,
+  ) async {
+    try {
+      fireStore
+          .collection("users")
+          .doc(userid)
+          .collection("notes")
+          .doc(uuid)
+          .update({
+        "Title": Title,
+        "Description": Description,
+        "Data": Date,
+        "Time": Time,
+        "Category": Category,
+        "isDone": false
+      });
+      return true;
+    } catch (e) {
+      return true;
     }
   }
 }

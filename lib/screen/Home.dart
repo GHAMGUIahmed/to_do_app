@@ -9,10 +9,14 @@ import 'package:to_do/provider/auth_provider.dart';
 import 'package:to_do/provider/cloudprovider.dart';
 import 'package:to_do/screen/CardWidget.dart';
 import 'package:to_do/screen/ShowModel.dart';
+import 'package:to_do/services/cloud_services.dart';
 
 class HomePage extends ConsumerWidget {
-  const HomePage({super.key, this.userName});
   final String? userName;
+  HomePage({
+    super.key,
+    required this.userName,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,79 +72,79 @@ class HomePage extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(children: [
-            const Gap(20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Today's Task",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+          child: Column(
+            children: [
+              const Gap(20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Today's Task",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        format.format(DateTime.now()),
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white70,
+                      foregroundColor: Colors.blue.shade800,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    Text(
-                      format.format(DateTime.now()),
-                      style: const TextStyle(color: Colors.grey),
+                    onPressed: () => showModalBottomSheet(
+                      isScrollControlled: true,
+                      useRootNavigator: auth.user != null,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      context: context,
+                      builder: (context) => ShowModel(
+                        title_controller: ref.read(titleControllerProvider),
+                        description_controller:
+                            ref.read(descControllerProvider),
+                      ),
                     ),
-                  ],
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white70,
-                    foregroundColor: Colors.blue.shade800,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: () => showModalBottomSheet(
-                    isScrollControlled: true,
-                    useRootNavigator:
-                        ref.watch(authServiceProvider).user != null,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    context: context,
-                    builder: (context) => ShowModel(
-                      title_controller: ref.watch(titleControllerProvider),
-                      description_controller: ref.watch(descControllerProvider),
+                    child: const Text(
+                      "+ New Task",
                     ),
                   ),
-                  child: const Text(
-                    "+ New Task",
-                  ),
-                ),
-              ],
-            ),
-            const Gap(20),
-            StreamBuilder<QuerySnapshot>(
-                stream: cloud.stream(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
-                  }
-                  final notelist = cloud.getNotes(snapshot);
-                  if (notelist.isEmpty) {
-                    return const CircularProgressIndicator();
-                  }
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      final note = notelist[index];
-                      return CardWidget(
-                        note: note,
-                      );
-                    },
-                    itemCount: notelist.length,
-                    shrinkWrap: true,
-                  );
-                }),
-          ]),
+                ],
+              ),
+              const Gap(20),
+              StreamBuilder<QuerySnapshot>(
+                  stream: CloudService().stream(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
+                    final notelist = cloud.getNotes(snapshot);
+                    if (notelist.isEmpty) {
+                      return const CircularProgressIndicator();
+                    }
+                    return ListView.builder(
+                      itemBuilder: (context, index) {
+                        final note = notelist[index];
+                        return CardWidget(note: note);
+                      },
+                      itemCount: notelist.length,
+                      shrinkWrap: true,
+                    );
+                  }),
+            ],
+          ),
         ),
       ),
     );

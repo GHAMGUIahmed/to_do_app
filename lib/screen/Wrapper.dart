@@ -1,28 +1,28 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:to_do/model/User.dart';
-import 'package:to_do/provider/auth_provider.dart';
 import 'package:to_do/screen/FirstPage.dart';
 import 'package:to_do/screen/Home.dart';
+import 'package:to_do/services/auth_services.dart';
 
-class Wrapper extends ConsumerStatefulWidget {
-  const Wrapper({super.key});
-  @override
-  ConsumerState<Wrapper> createState() => WrapperState();
-}
-
-class WrapperState extends ConsumerState<Wrapper> {
+class Wrapper extends StatelessWidget {
+  const Wrapper({
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final authService = ref.watch(authServiceProvider);
     return StreamBuilder<UserModel?>(
-      stream: authService.user,
+      stream: AuthService().user,
       builder: (_, AsyncSnapshot<UserModel?> snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final UserModel? user = snapshot.data;
+
           if (user == null) {
             return MyHomePage();
           } else {
+            print(user.name);
+
             return HomePage(
               userName: user.name,
             );
