@@ -8,8 +8,8 @@ import 'package:to_do/services/auth_services.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<UserModel?>(
@@ -21,8 +21,6 @@ class Wrapper extends StatelessWidget {
           if (user == null) {
             return MyHomePage();
           } else {
-            print(user.name);
-
             return HomePage(
               userName: user.name,
             );

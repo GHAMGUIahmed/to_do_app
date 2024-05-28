@@ -65,10 +65,8 @@ class LogIn extends ConsumerWidget {
               ),
               onPressed: () async {
                 try {
-                  Navigator.pop(context);
                   await authSerice.SignInWithEmailAndPassword(
                       email_controller.text, password_controller.text);
-                  //print();
                 } catch (e) {
                   showDialog(
                       context: context,
