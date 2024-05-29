@@ -13,7 +13,7 @@ import 'package:to_do/services/cloud_services.dart';
 
 class HomePage extends ConsumerWidget {
   final String? userName;
-  HomePage({
+  const HomePage({
     super.key,
     required this.userName,
   });
