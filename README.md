@@ -16,18 +16,18 @@ This is a simple and powerful To-Do List application built using Flutter. The ap
 - Localization support with `intl` 
 
 ## Usage 
--Sign Up / Sign In: Users can sign up or sign in using their email and password.
+- Sign Up / Sign In: Users can sign up or sign in using their email and password.
 
--Add Tasks: Users can add new tasks with a title and optional description.
+- Add Tasks: Users can add new tasks with a title and optional description.
 
--Edit Tasks: Users can edit existing tasks.
+- Edit Tasks: Users can edit existing tasks.
 
--Delete Tasks: Users can delete tasks that are no longer needed.
+- Delete Tasks: Users can delete tasks that are no longer needed.
 
--View Tasks: Users can view all their tasks in a list format. 
+- View Tasks: Users can view all their tasks in a list format. 
 
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. 
 
 
 
